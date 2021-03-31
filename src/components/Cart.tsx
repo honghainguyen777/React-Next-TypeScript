@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createRef } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import CartCSS from "./Cart.module.css";
 import { AppStateContext } from "./AppState";
@@ -10,11 +10,13 @@ interface State {
 }
 
 class Cart extends React.Component<Props, State> {
+  private containerRef: React.RefObject<HTMLDivElement>;
   constructor(props: Props) {
     super(props);
     this.state = {
       isOpen: false,
     };
+    this.containerRef = createRef();
     // this.handleClick = this.handleClick.bind(this);
   }
 
@@ -24,11 +26,28 @@ class Cart extends React.Component<Props, State> {
   // }
 
   handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    if ((e.target as HTMLElement).nodeName === "SPAN") {
-      e.target as HTMLSpanElement; // do more using .
-    }
+    // if ((e.target as HTMLElement).nodeName === "SPAN") {
+    //   e.target as HTMLSpanElement; // do more using .
+    // }
     this.setState((prevState) => ({ isOpen: !prevState.isOpen }));
   };
+
+  handleOutSideClick = (e: MouseEvent) => {
+    if (
+      this.containerRef.current &&
+      !this.containerRef.current.contains(e.target as Node)
+    ) {
+      this.setState({ isOpen: false });
+    }
+  };
+
+  componentDidMount() {
+    document.addEventListener("mousedown", this.handleOutSideClick);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("mousedown", this.handleOutSideClick);
+  }
 
   render() {
     return (
@@ -39,7 +58,7 @@ class Cart extends React.Component<Props, State> {
             0
           );
           return (
-            <div className={CartCSS.cartContainer}>
+            <div className={CartCSS.cartContainer} ref={this.containerRef}>
               <button
                 className={CartCSS.button}
                 type="button"
