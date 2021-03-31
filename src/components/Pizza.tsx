@@ -1,6 +1,5 @@
 import React from "react";
 import PizzaCSS from "./Pizza.module.css";
-import { AppStateContext, useStateDispatch } from "./AppState";
 import { Pizza } from "./types";
 import { withAddToCart, AddToCartProps } from "./AddToCart";
 
